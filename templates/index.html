@@ -1,0 +1,77 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %}Web Crawler - Start New Crawl{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-spider"></i> Start New Crawl</h4>
+            </div>
+            <div class="card-body">
+                <form action="/start_crawl" method="post">
+                    <div class="mb-3">
+                        <label for="start_url" class="form-label">Start URL</label>
+                        <input type="url" class="form-control" id="start_url" name="start_url" 
+                               placeholder="https://example.com" required>
+                        <div class="form-text">The URL where the crawler will start</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="max_depth" class="form-label">Max Depth</label>
+                        <input type="number" class="form-control" id="max_depth" name="max_depth" 
+                               value="3" min="1" max="10">
+                        <div class="form-text">Maximum depth of links to follow</div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="use_selenium" name="use_selenium">
+                        <label class="form-check-label" for="use_selenium">Use Selenium (for JavaScript-heavy sites)</label>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="restrict_domain" name="restrict_domain" checked>
+                        <label class="form-check-label" for="restrict_domain">Restrict to same domain</label>
+                    </div>
+                    
+                    <hr>
+                    <h5>Data Extraction Selectors</h5>
+                    <div class="text-muted mb-3">Define what data to extract from each page using CSS selectors</div>
+                    
+                    <div class="row mb-2">
+                        <div class="col-md-5">
+                            <label class="form-label">Field Name</label>
+                        </div>
+                        <div class="col-md-7">
+                            <label class="form-label">CSS Selector</label>
+                        </div>
+                    </div>
+                    
+                    {% for i in range(1, 6) %}
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" name="field_{{ i }}" 
+                                   placeholder="e.g., title, price, description">
+                        </div>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" name="selector_{{ i }}"
+                                   placeholder="e.g., h1, .price, #description">
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-play-fill"></i> Start Crawling
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

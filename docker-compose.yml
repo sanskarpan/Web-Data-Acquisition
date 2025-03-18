@@ -1,0 +1,33 @@
+
+version: '3.8'
+
+services:
+  crawler:
+    build: .
+    container_name: web-crawler
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./crawler_data:/app/crawler_data
+      - ./screenshots:/app/screenshots
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:4.4
+    container_name: crawler-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=crawler_data
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:

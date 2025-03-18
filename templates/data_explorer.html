@@ -1,0 +1,109 @@
+
+
+
+{% extends 'base.html' %}
+
+{% block title %}Data Explorer{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-header">
+        <h4 class="mb-0"><i class="bi bi-database"></i> Data Explorer</h4>
+    </div>
+    <div class="card-body">
+        <form action="/data" method="get" class="row g-3">
+            <div class="col-md-6">
+                <label for="url_filter" class="form-label">Filter by URL (contains)</label>
+                <input type="text" class="form-control" id="url_filter" name="url_filter" value="{{ url_filter }}">
+            </div>
+            <div class="col-md-4">
+                <label for="limit" class="form-label">Limit</label>
+                <input type="number" class="form-control" id="limit" name="limit" value="{{ limit }}" min="1" max="1000">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <div class="btn-group">
+        <a href="/export/csv?url_filter={{ url_filter }}&limit={{ limit }}" class="btn btn-success">
+            <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+        </a>
+        <a href="/export/json?url_filter={{ url_filter }}&limit={{ limit }}" class="btn btn-info">
+            <i class="bi bi-file-earmark-code"></i> Export JSON
+        </a>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-header">
+        <h5 class="mb-0">
+            Results <span class="badge bg-secondary">{{ data|length }} items</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>URL</th>
+                        {% for item in data %}
+                            {% for key, value in item.items() %}
+                                {% if key != 'url' and key != 'crawl_date' %}
+                                <th>{{ key }}</th>
+                                {% endif %}
+                            {% endfor %}
+                            {% break %}
+                        {% endfor %}
+                        <th>Crawl Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="text-truncate" style="max-width: 200px;">
+                            <a href="{{ item.url }}" target="_blank">{{ item.url }}</a>
+                        </td>
+                        {% for key, value in item.items() %}
+                            {% if key != 'url' and key != 'crawl_date' %}
+                            <td>
+                                {% if value is string and value|length > 100 %}
+                                <span class="text-truncate d-inline-block" style="max-width: 200px;" 
+                                      data-bs-toggle="tooltip" title="{{ value }}">
+                                    {{ value[:100] }}...
+                                </span>
+                                {% else %}
+                                {{ value }}
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        {% endfor %}
+                        <td>{{ item.crawl_date }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="100" class="text-center">No data found. Try adjusting your filters.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+{% endblock %}
+

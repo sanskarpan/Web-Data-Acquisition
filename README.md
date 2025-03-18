@@ -22,7 +22,7 @@ A comprehensive web crawling and data extraction system with a user-friendly web
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/web-crawler.git
+   git clone https://github.com/sanskarpan/Web-Data-Acquisition.git
    cd web-crawler
    ```
 
